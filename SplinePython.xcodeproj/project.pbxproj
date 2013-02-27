@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C7B63AFD16DBBBCD0076AB4E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7B63AFC16DBBBCD0076AB4E /* main.cpp */; };
 		C7B63AFF16DBBBCD0076AB4E /* SplinePython.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7B63AFE16DBBBCD0076AB4E /* SplinePython.1 */; };
+		C7B63B0A16DBBC050076AB4E /* SplineEigen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7B63B0916DBBC050076AB4E /* SplineEigen.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,9 @@
 		C7B63AF916DBBBCD0076AB4E /* SplinePython */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SplinePython; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7B63AFC16DBBBCD0076AB4E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		C7B63AFE16DBBBCD0076AB4E /* SplinePython.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SplinePython.1; sourceTree = "<group>"; };
+		C7B63B0816DBBC050076AB4E /* SplineEigen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SplineEigen.hpp; path = ../SplineEigen.hpp; sourceTree = "<group>"; };
+		C7B63B0916DBBC050076AB4E /* SplineEigen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SplineEigen.cpp; path = ../SplineEigen.cpp; sourceTree = "<group>"; };
+		C7EC781116DD0F5D0031F81B /* libboost_python.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_python.dylib; path = ../../../../../usr/lib/libboost_python.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +48,7 @@
 		C7B63AF016DBBBCC0076AB4E = {
 			isa = PBXGroup;
 			children = (
+				C7EC781116DD0F5D0031F81B /* libboost_python.dylib */,
 				C7B63AFB16DBBBCD0076AB4E /* SplinePython */,
 				C7B63AFA16DBBBCD0076AB4E /* Products */,
 			);
@@ -60,6 +65,8 @@
 		C7B63AFB16DBBBCD0076AB4E /* SplinePython */ = {
 			isa = PBXGroup;
 			children = (
+				C7B63B0816DBBC050076AB4E /* SplineEigen.hpp */,
+				C7B63B0916DBBC050076AB4E /* SplineEigen.cpp */,
 				C7B63AFC16DBBBCD0076AB4E /* main.cpp */,
 				C7B63AFE16DBBBCD0076AB4E /* SplinePython.1 */,
 			);
@@ -118,6 +125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7B63AFD16DBBBCD0076AB4E /* main.cpp in Sources */,
+				C7B63B0A16DBBC050076AB4E /* SplineEigen.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,12 +155,32 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					"/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include",
+					/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib,
+					/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-finline-functions",
+					"-Wno-inline",
+					"-Wall",
+					"-DNDEBUG",
+					"$(OTHER_CFLAGS)",
+				);
+				OTHER_LDFLAGS = (
+					"-lpython2.7",
+					"-lboost_python",
+				);
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -174,11 +202,31 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/opt/local/include,
+					"/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/numpy/core/include",
+					/opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/opt/local/lib,
+					/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CPLUSPLUSFLAGS = (
+					"-finline-functions",
+					"-Wno-inline",
+					"-Wall",
+					"-DNDEBUG",
+					"$(OTHER_CFLAGS)",
+				);
+				OTHER_LDFLAGS = (
+					"-lpython2.7",
+					"-lboost_python",
+				);
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -216,6 +264,7 @@
 				C7B63B0416DBBBCD0076AB4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
