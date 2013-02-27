@@ -69,7 +69,6 @@ class Spline(object):
         if(X.ndim < 2):
             assert X.ndim == 0 or X.shape[0] == self.N
             assert d.ndim == 0 or len(d) == self.N
-            print d.dtype
             return self.f.feval(X,d)
         assert X.shape[0] == self.N or X.shape[1] == self.N
         assert len(d) == self.N

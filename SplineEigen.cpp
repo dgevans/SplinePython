@@ -381,8 +381,9 @@ Spline Spline::load(std::ifstream &fin)
 
 namespace bp = boost::python;
 
-typedef Matrix<double,Dynamic,Dynamic,RowMajor> MatrixXdNP;
-typedef Matrix<long,Dynamic,1> VectorXl;
+typedef Matrix<npy_double,Dynamic,Dynamic,RowMajor> MatrixXdNP;
+typedef Matrix<npy_double,Dynamic,1> VectorXdNP;
+typedef Matrix<npy_long,Dynamic,1> VectorXlNP;
 
 class SplinePython
 {
@@ -402,23 +403,23 @@ public:
 
 SplinePython::SplinePython(PyObject * pyX,PyObject * pyY, bp::list pyk, bool sorted)
 {
-    int Xdim = PyArray_NDIM(pyX);
+    npy_long Xdim = PyArray_NDIM(pyX);
     npy_intp * Xshape = PyArray_DIMS(pyX);
-    int nX1 = Xshape[0],nX2;
+    npy_long nX1 = Xshape[0],nX2;
     if(Xdim==1)
         nX2 = 1;
     else
         nX2 = Xshape[1];
-    Map<MatrixXdNP> X((double *)PyArray_DATA(pyX),nX1,nX2);
+    Map<MatrixXdNP> X((npy_double *)PyArray_DATA(pyX),nX1,nX2);
     npy_intp * Yshape = PyArray_DIMS(pyY);
-    Map<VectorXd> Y((double *)PyArray_DATA(pyY),Yshape[0]);
+    Map<VectorXdNP> Y((npy_double *)PyArray_DATA(pyY),Yshape[0]);
     
     int nk = bp::len(pyk);
     std::vector<int> k(nk);
     for(int i =0; i < nk; i++)
         k[i] = bp::extract<int>(pyk[i]);
     
-    f = Spline(X, Y, k,sorted);
+    f = Spline(X.cast<double>(), Y.cast<double>(), k,sorted);
 }
 
 void SplinePython::operator()(PyObject *pyX, PyObject * pyd, PyObject *pyY)
@@ -436,24 +437,23 @@ void SplinePython::operator()(PyObject *pyX, PyObject * pyd, PyObject *pyY)
         nX1 = Xshape[0];
         nX2 = Xshape[1];
     }
-    Map<VectorXl> d((long *)PyArray_DATA(pyd),f.getN());
-    Map<MatrixXdNP> X((double *)PyArray_DATA(pyX),nX1,nX2);
-    Map<VectorXd> Y((double *)PyArray_DATA(pyY),nX1);
+    Map<VectorXlNP> d((npy_long *)PyArray_DATA(pyd),f.getN());
+    Map<MatrixXdNP> X((npy_double *)PyArray_DATA(pyX),nX1,nX2);
+    Map<VectorXdNP> Y((npy_double *)PyArray_DATA(pyY),nX1);
     for(int i =0; i < nX1; i++)
-        Y[i] = f(X.row(i),d.cast<int>());
+        Y[i] = f(X.cast<double>().row(i),d.cast<int>());
 }
 
 double SplinePython::feval(PyObject *pyX,PyObject *pyd)
 {
-    Map<VectorXd> X((double *)PyArray_DATA(pyX),f.getN());
-    Map<VectorXl> d((long *)PyArray_DATA(pyd),f.getN());
-    std::cout<<d<<std::endl;
+    Map<VectorXdNP> X((npy_double *)PyArray_DATA(pyX),f.getN());
+    Map<VectorXlNP> d((npy_long *)PyArray_DATA(pyd),f.getN());
     return f(X,d.cast<int>());
 }
 
 void SplinePython::getCoeff(PyObject *pyC)
 {
-    Map<VectorXd> Y((double *)PyArray_DATA(pyC),f.getCoeff().rows());
+    Map<VectorXdNP> Y((npy_double *)PyArray_DATA(pyC),f.getCoeff().rows());
     Y = f.getCoeff();
 }
 
