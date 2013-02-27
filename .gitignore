@@ -1,0 +1,5 @@
+*.pyc
+/Spline/Spline_cpp.so
+/.idea/
+/SplinePython.xcodeproj/project.xcworkspace/
+/SplinePython.xcodeproj/xcuserdata/
