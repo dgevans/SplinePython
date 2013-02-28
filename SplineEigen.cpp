@@ -10,11 +10,12 @@
 #include <iostream>
 
 #include <boost/python.hpp>
+#include <boost/python/numeric.hpp>
 
 
 using namespace Eigen;
 using std::endl;
-Spline::Spline(long _N, const std::vector<int> &_k,const std::vector<breakpoints> &_v,const Eigen::VectorXd &_c):N(_N),k(_k),v(_v),c(_c)
+Spline::Spline(long _N, const std::vector<int> &_k,const std::vector<breakpoints> &_v,const Eigen::VectorXd &_c):k(_k),N(_N),v(_v),c(_c)
 {
 }
 
@@ -388,8 +389,13 @@ typedef Matrix<npy_long,Dynamic,1> VectorXlNP;
 class SplinePython
 {
     Spline f;
+    
+    friend struct SplinePythonPickle;
 public:
-    SplinePython(PyObject * pyX,PyObject * pyY, bp::list k, bool sorted);
+    
+    SplinePython(){};
+    
+    void fit(PyObject * pyX,PyObject * pyY, bp::list k, bool sorted);
     
     void operator()(PyObject *xpy, PyObject * dpy, PyObject *pyY);
     
@@ -399,9 +405,11 @@ public:
     
     int getCoeffSize();
     
+    void test(){std::cout<<"test"<<std::endl;};
+    
 };
 
-SplinePython::SplinePython(PyObject * pyX,PyObject * pyY, bp::list pyk, bool sorted)
+void SplinePython::fit(PyObject * pyX,PyObject * pyY, bp::list pyk, bool sorted)
 {
     npy_long Xdim = PyArray_NDIM(pyX);
     npy_intp * Xshape = PyArray_DIMS(pyX);
@@ -462,16 +470,100 @@ int SplinePython::getCoeffSize()
     return f.getCoeff().rows();
 }
 
+struct SplinePythonPickle : bp::pickle_suite
+{
+    
+    static
+    boost::python::tuple
+    getinitargs(SplinePython const& w)
+    {
+        return boost::python::make_tuple();
+    }
+    
+    static
+    boost::python::tuple
+    getstate(SplinePython const& SP)
+    {
+        int N = SP.f.N;
+        const std::vector<int> &k =  SP.f.k;
+        const std::vector<breakpoints> &v = SP.f.v;
+        const VectorXd &c = SP.f.c;
+        
+        //store order of approximation
+        bp::list pyk;
+        for (int i = 0; i < N; i++) {
+            pyk.append(k[i]);
+        }
+        
+        //store breakpoints in a list of list
+        bp::list pyv;
+        for (int i=0; i < N; i++){
+            bp::list temp;
+            int p = v[i].p();
+            for (int j = 0; j < p; j++)
+                temp.append(v[i][j]);
+            pyv.append(temp);
+        }
+        
+        //store coefficients as list
+        bp::list pyc;
+        for (int i =0; i < c.rows();i++)
+            pyc.append(c(i));
+        
+        //finally return tuple of all thes objects
+        return bp::make_tuple(N,pyk,pyv,pyc);
+    }
+    
+    static
+    void
+    setstate(SplinePython& SP, boost::python::tuple state)
+    {
+        //Start by extracting the various objects
+        int N = bp::extract<int>(state[0]);
+        bp::list pyk = bp::extract<bp::list>(state[1]);
+        bp::list pyv = bp::extract<bp::list>(state[2]);
+        bp::list pyc = bp::extract<bp::list>(state[3]);
+        
+        //Now create k
+        std::vector<int> k;
+        for(int i =0; i < N; i++)
+            k.push_back(bp::extract<int>(pyk[i]));
+        
+        //create v
+        std::vector<breakpoints> v;
+        for(int i = 0; i < N; i++)
+        {
+            int p = bp::len(pyv[i]);
+            bp::list tempv = bp::extract<bp::list>(pyv[i]);
+            VectorXd temp(p);
+            for(int j =0; j < p ; j++)
+                temp(j) = bp::extract<double>(tempv[j]);
+        }
+        
+        //create c
+        int nc = bp::len(pyc);
+        VectorXd c(nc);
+        for(int i=0; i < nc; i++)
+            c(i) = bp::extract<double>(pyc[i]);
+        
+        SP.f = Spline(N, k, v, c);
+    }
+};
+
 
 using namespace boost::python;
 
 BOOST_PYTHON_MODULE(Spline_cpp)
 {
-    class_<SplinePython>("Spline_cpp",init<PyObject*,PyObject *,list,bool>())
+    class_<SplinePython>("Spline_cpp",init<>())
+    .def_pickle(SplinePythonPickle())
+    .def("fit",&SplinePython::fit)
     .def("__call__",&SplinePython::operator())
     .def("getCoeff",&SplinePython::getCoeff)
     .def("feval",&SplinePython::feval)
-    .def("getCoeffSize",&SplinePython::getCoeffSize);
+    .def("getCoeffSize",&SplinePython::getCoeffSize)
+    .def("test",&SplinePython::test);
+    
 }
 
 

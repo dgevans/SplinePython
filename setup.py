@@ -9,6 +9,6 @@ setup(
     author='dgevans',
     author_email='',
     description='',
-    package_dir={'Spline': 'Spline'},
+    package_dir={'Spline': 'SplineLib'},
     package_data={'Spline': ['Spline_cpp.so']},
 )

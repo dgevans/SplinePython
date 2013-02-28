@@ -2,7 +2,11 @@ __author__ = 'dgevans'
 from Spline_cpp import Spline_cpp
 import numpy as np
 
+
 class Spline(object):
+
+    f = Spline_cpp()
+
     def __init__(self,X,y,k=None):
         self.fit(X,y,k)
 
@@ -54,7 +58,7 @@ class Spline(object):
         k = list(k)
         assert len(k) == self.N
 
-        self.f = Spline_cpp(X,y,k,sorted)
+        self.f.fit(X,y,k,sorted)
 
 
     def __call__(self,X,d = None):

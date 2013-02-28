@@ -26,7 +26,7 @@ python-extension Spline_cpp
 
 install convenient_copy 
   : Spline_cpp 
-  :  <location>./Spline/ 
+  :  <location>./SplineLib/ 
   ;
 # Put the extension and Boost.Python DLL in the current directory, so
 # that running script by hand works.

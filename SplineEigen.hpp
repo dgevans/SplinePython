@@ -63,7 +63,7 @@ class Spline {
     
     Spline(long _N, const std::vector<int> &_k,const std::vector<breakpoints> &_v,const Eigen::VectorXd &_c);
     
-    friend class SplinePython;
+    friend struct SplinePythonPickle;
     
 public:
     
@@ -84,7 +84,11 @@ public:
     
     void save(std::ofstream &fout);
     
-    int getN(){return N;};
+    const std::vector<breakpoints>& getBreakpoints() const {return v;};
+    
+    int getN()const {return N;};
+    
+    const std::vector<int>& getk() const{return k;};
     
 };
 
