@@ -4,6 +4,7 @@ from SplineLib import Spline
 x = np.linspace(0,1,10)
 y = np.exp(x)
 f = Spline(x,y)
+f(np.linspace(0,1,100))
 #X = Spline.makeGrid([x,x])
 #y = 1/(0.5 +(X[:,0]+X[:,1])**2)
 

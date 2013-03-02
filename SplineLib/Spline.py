@@ -70,14 +70,13 @@ class Spline(object):
             X = np.ascontiguousarray(X)
         if not d.flags['C_CONTIGUOUS']:
             d = np.ascontiguousarray(d)
-        if(X.ndim < 2):
-            assert X.ndim == 0 or X.shape[0] == self.N
-            assert d.ndim == 0 or len(d) == self.N
-            return self.f.feval(X,d)
-        assert X.shape[0] == self.N or X.shape[1] == self.N
-        assert len(d) == self.N
+        #make sure arrays are of the right shape
+        X = np.atleast_2d(X)
+        d = np.atleast_1d(d)
+        assert X.ndim == 2 and (X.shape[0] == self.N or X.shape[1] == self.N) #X cannot be more than 2d, one dimension must be length N
+        assert d.ndim == 1 and len(d) == self.N
         if X.shape[0] == self.N:
-            X = X.transpose
+            X = X.transpose()
         y = np.zeros(X.shape[0])
         self.f(X,d,y)
         return y
