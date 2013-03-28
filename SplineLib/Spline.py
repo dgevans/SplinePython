@@ -43,7 +43,7 @@ class Spline(object):
             y = np.ascontiguousarray(y)
         assert y.ndim == 1
         if X.ndim > 1:
-            assert X.shape[0] == y.shape[0] or X.shape[1] == y.shape[0]
+            assert X.ndim==2 and (X.shape[0] == y.shape[0] or X.shape[1] == y.shape[0])
 
             if(X.shape[0] != y.shape[0]):
                 X = X.transpose()
