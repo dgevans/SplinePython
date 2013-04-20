@@ -538,6 +538,7 @@ struct SplinePythonPickle : bp::pickle_suite
             VectorXd temp(p);
             for(int j =0; j < p ; j++)
                 temp(j) = bp::extract<double>(tempv[j]);
+            v.push_back(breakpoints(temp));
         }
         
         //create c
