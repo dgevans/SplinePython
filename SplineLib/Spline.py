@@ -5,9 +5,8 @@ import numpy as np
 
 class Spline(object):
 
-    f = Spline_cpp()
-
     def __init__(self,X,y,k=None):
+        self.f = Spline_cpp()
         self.fit(X,y,k)
 
     @staticmethod
