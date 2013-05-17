@@ -157,10 +157,13 @@ void Spline::fitcomplete(const MatrixXd &X, const VectorXd &Y)
             B.setFromTriplets(TripList.begin(),TripList.end());
             Phi = kron(B,Phi);
         }
-        BiCGSTAB<SparseMatrix<double,RowMajor> >solver;
+        SparseMatrix<double> A = (Phi.transpose())*Phi;
+        VectorXd b = ( Phi.transpose() ) * Y;
+        //BiCGSTAB<SparseMatrix<double,RowMajor> >solver;
         //UmfPackLU<SparseMatrix<double,RowMajor> > solver;
-        solver.compute(Phi);
-        c = solver.solve(Y);
+        CholmodDecomposition<SparseMatrix<double> > solver;
+        solver.compute(A);
+        c = solver.solve(b);
     }
 }
 
@@ -220,7 +223,8 @@ void Spline::fitIncomplete(const MatrixXd &X, const VectorXd &Y)
         VectorXd b = ( Phi.transpose() ) * Y;
         
         //CholmodDecomposition<SparseMatrix<double> > solver;
-        BiCGSTAB<SparseMatrix<double> > solver;
+        UmfPackLU<SparseMatrix<double,RowMajor> > solver;
+        //BiCGSTAB<SparseMatrix<double> > solver;
         //Solve the matrix
         solver.compute(A);
         c = solver.solve(b);

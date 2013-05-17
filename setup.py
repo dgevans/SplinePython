@@ -14,9 +14,9 @@ extension_version ='1.0'
 # to your boost installation. Mine was in
 # '/usr/local/include', hence the corresponding entry.
 include_dirs = ['/opt/local/include', '.',numpy.get_include()]
-library_dirs = ['/usr/lib']
+library_dirs = ['/usr/lib','/opt/local/lib']
 # define the libraries to link with the boost python library
-libraries = ['boost_python']
+libraries = ['boost_python','cxsparse','cholmod','amd','camd','ccolamd','SuiteSparse','suitesparseconfig']
 # define the source files for the extension
 source_files = ['SplineEigen.cpp']
 # create the extension and add it to the python distribution
