@@ -17,7 +17,7 @@ include_dirs = ['/opt/local/include', '.',numpy.get_include()]
 library_dirs = ['/usr/lib','/opt/local/lib']
 # define the libraries to link with the boost python library
 libraries = ['boost_python']
-SuiteSparseLibraries = ['cxsparse','cholmod','amd','camd','ccolamd','SuiteSparse','suitesparseconfig']
+sslibraries = ['blas','lapack','cxsparse','amd','camd','ccolamd','suitesparseconfig','btf','colamd','klu','ldl','rbio','spqr','umfpack','cholmod']
 # define the source files for the extension
 source_files = ['SplineEigen.cpp']
 # create the extension and add it to the python distribution
