@@ -405,7 +405,7 @@ public:
     
     void operator()(PyObject *xpy, PyObject * dpy, PyObject *pyY);
     
-    double feval(PyObject *xpy, PyObject *pyd);
+    double feval1d(double x);
     
     void getCoeff(PyObject *pyC);
     
@@ -458,11 +458,11 @@ void SplinePython::operator()(PyObject *pyX, PyObject * pyd, PyObject *pyY)
         Y[i] = f(X.cast<double>().row(i),d.cast<int>());
 }
 
-double SplinePython::feval(PyObject *pyX,PyObject *pyd)
+double SplinePython::feval1d(double x)
 {
-    Map<VectorXdNP> X((npy_double *)PyArray_DATA(pyX),f.getN());
-    Map<VectorXlNP> d((npy_long *)PyArray_DATA(pyd),f.getN());
-    return f(X,d.cast<int>());
+    Matrix<double,1,1> X;
+    X(0) = x;
+    return f(X);
 }
 
 void SplinePython::getCoeff(PyObject *pyC)
@@ -567,7 +567,7 @@ BOOST_PYTHON_MODULE(Spline_cpp)
     .def("fit",&SplinePython::fit)
     .def("__call__",&SplinePython::operator())
     .def("getCoeff",&SplinePython::getCoeff)
-    .def("feval",&SplinePython::feval)
+    .def("feval1d",&SplinePython::feval1d)
     .def("getCoeffSize",&SplinePython::getCoeffSize)
     .def("test",&SplinePython::test);
     

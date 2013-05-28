@@ -79,6 +79,8 @@ class Spline(object):
         y = np.zeros(X.shape[0])
         self.f(X,d,y)
         return y
+    def feval1d(self,x):
+        return self.f.feval1d(x)
 
     def getCoeffs(self):
         c = np.zeros(self.f.getCoeffSize())
