@@ -161,7 +161,7 @@ void Spline::fitcomplete(const MatrixXd &X, const VectorXd &Y)
         VectorXd b = ( Phi.transpose() ) * Y;
         //BiCGSTAB<SparseMatrix<double,RowMajor> >solver;
         //UmfPackLU<SparseMatrix<double,RowMajor> > solver;
-        CholmodDecomposition<SparseMatrix<double> > solver;
+        SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<int> >   solver;
         //SimplicialLDLT<SparseMatrix<double> > solver;
         solver.compute(A);
         c = solver.solve(b);
@@ -222,8 +222,8 @@ void Spline::fitIncomplete(const MatrixXd &X, const VectorXd &Y)
         }
         SparseMatrix<double> A = (Phi.transpose())*Phi;
         VectorXd b = ( Phi.transpose() ) * Y;
-        
-        CholmodDecomposition<SparseMatrix<double> > solver;
+        SparseLU<SparseMatrix<double, ColMajor>, COLAMDOrdering<int> >   solver;
+        //CholmodDecomposition<SparseMatrix<double> > solver;
         //UmfPackLU<SparseMatrix<double> > solver;
         //BiCGSTAB<SparseMatrix<double> > solver;
         //SimplicialLDLT<SparseMatrix<double> > solver;

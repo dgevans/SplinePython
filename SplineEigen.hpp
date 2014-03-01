@@ -12,8 +12,6 @@
 #include <map>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Sparse>
-#include <eigen3/Eigen/UmfPackSupport>
-#include <eigen3/Eigen/CholmodSupport>
 #include <fstream>
 #include <Python.h>
 #include <numpy/arrayobject.h>
